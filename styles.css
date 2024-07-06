@@ -1,0 +1,58 @@
+body {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+#display {
+    box-sizing: border-box;
+    font-size: 50px;
+    background-color: #D6EDFF;
+    border: 2px solid;
+    min-width: 375px;
+    min-height: 85px;
+    margin-bottom: 0px;
+    padding: 12px;
+}
+
+.container {
+    width: 375px;
+}
+
+button {
+    font-size: 40px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.row1,
+.row2,
+.row3,
+.row4,
+.row5 {
+    display: flex;
+}
+
+.digit {
+    flex: 1;
+    box-sizing: border-box;
+    background-color: #515751;
+    color: ivory;
+    height: 75px
+}
+
+.nonDigit {
+    flex: 1;
+    box-sizing: border-box;
+    background-color: #C2C1A5;
+    color: #36453B;
+    height: 75px;
+}
+
+.operator {
+    flex: 1;
+    box-sizing: border-box;
+    background-color: #C9ADA7;
+    color: black;
+    width: 80px;
+}
+
+
+
