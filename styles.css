@@ -30,6 +30,14 @@ button {
     display: flex;
 }
 
+#clear {
+    flex: 0.85;
+}
+
+#divide {
+    flex: 0.25;
+}
+
 .digit {
     flex: 1;
     box-sizing: border-box;
