@@ -1,13 +1,11 @@
 //global vars
-let NUM1 = 0;
-let OPERATOR;
-let NUM2 = 0;
-let RESULT = 0;
+let NUM1 = null;
+let OPERATOR = null;
+let NUM2 = null;
+let RESULT = null;
 
-let num1Aquired = false;
-let num2Aquired = false;
-let operatorAquired = false;
 let operatorJustPressed = false;
+let resultDisplayed = false;
 
 // - - - - operation functions - - - -
 
@@ -25,7 +23,7 @@ function mulitply(num1, num2) {
 
 function divide(num1, num2) {
     if (num2 === 0) {
-        return undefined;
+        return "ERROR";
     }
 
     else {
@@ -34,12 +32,30 @@ function divide(num1, num2) {
 }
 
 function operate(num1, operator, num2) {
+    num1 = Number(num1);
+    num2 = Number(num2);
+
+    let result;
     switch (operator) {
-        case "+": return add(num1, num2);
-        case "-": return subtract(num1, num2);
-        case "*": return mulitply(num1, num2);
-        case "/": return divide(num1, num2);
+        case "+":
+            result = add(num1, num2);
+            break;
+        case "-":
+            result = subtract(num1, num2);
+            break;
+        case "*":
+            result = mulitply(num1, num2);
+            break;
+        case "/":
+            result = divide(num1, num2);
+            break;
     }
+
+    if(!(Number.isInteger(result))) {
+        result = result.toFixed(3);
+    }
+
+    return result;
 }
 
 // - - - BUTTONS AND DISPLAY - - -
@@ -52,20 +68,58 @@ const equalsBtn = document.querySelector("#equals");
 const log = document.querySelector(".log");
 
 function resetOperatorColors() {
-    operatorBtns.forEach( (button) => {
+    operatorBtns.forEach((button) => {
         button.style.backgroundColor = "#C9ADA7";
     });
-} 
+}
+function updateLog() {
+    log.textContent = `NUM1: ${NUM1}, 
+    NUM2: ${NUM2}, 
+    OPERATOR: ${OPERATOR}, 
+    operatorJustPressed: ${operatorJustPressed}, 
+    resultDisplayed: ${resultDisplayed}`;
+}
+
+function setOperator(operatorTextContent) {
+    switch (operatorTextContent) {
+        case "+":
+            OPERATOR = "+";
+            break;
+        case "-":
+            OPERATOR = "-";
+            break;
+        case '÷':
+            OPERATOR = "/";
+            break;
+        case "×":
+            OPERATOR = "*";
+            break;
+    }
+
+    //updateLog();
+}
 
 digitBtns.forEach((button) => {
     button.addEventListener("click", () => {
-        if(operatorJustPressed) {
+        if (operatorJustPressed) {
             display.textContent = "";
             operatorJustPressed = false;
+            resultDisplayed = false;
             resetOperatorColors();
+            
+        }
+
+        //result is displayed and no new operator was pressed before
+        // user started typing a new number. 
+        else if (resultDisplayed){
+            display.textContent = "";
+            resultDisplayed = false;
+            NUM1 = null;
         }
 
         display.textContent += button.textContent;
+
+        //updateLog();
     });
 });
 
@@ -78,44 +132,40 @@ operatorBtns.forEach((button) => {
             return;
         }
 
-        else if(operatorAquired) {
+        else if (operatorJustPressed) {
             //operator already active.
             return;
         }
 
         else {
-            operatorAquired = true;
+
             operatorJustPressed = true;
             button.style.backgroundColor = "#f99c87";
 
-            if (num1Aquired == false) {
+            if (NUM1 == null) {
                 NUM1 = Number(display.textContent);
-                num1Aquired = true;
-
-                switch (button.textContent) {
-                    case "+":
-                        OPERATOR = "+";
-                        break;
-                    case "-":
-                        OPERATOR = "-";
-                        break;
-                    case '÷':
-                        OPERATOR = "/";
-                        break;
-                    case "×":
-                        OPERATOR = "*";
-                        break;
-                }
+                setOperator(button.textContent);
+                //updateLog();
             }
 
-            else if(num1Aquired) {
-                if(num2Aquired) {
-                    //Chain computation
-                }
+            else if (!(NUM1 == null) && !(resultDisplayed) && OPERATOR) {
 
+                //num1, and an operator already aquired. (chain-operation)
                 NUM2 = Number(display.textContent);
-                num2Aquired = true;
+                RESULT = operate(NUM1, OPERATOR, NUM2);
+                display.textContent = RESULT;
+                
+
+                NUM1 = RESULT;
+                setOperator(button.textContent);
+                //updateLog();
             }
+
+            else if (!(NUM1 == null) && (resultDisplayed) && !(OPERATOR)) {
+                setOperator(button.textContent);
+
+            }
+
         }
     });
 });
@@ -123,22 +173,34 @@ operatorBtns.forEach((button) => {
 
 clearBtn.addEventListener("click", () => {
     display.textContent = "";
-    NUM1 = 0;
-    NUM2 = 0;
-    OPERATOR = "";
-    RESULT = "";
-    num1Aquired = false;
-    num2Aquired = false;
-    operatorAquired = false;
+    NUM1 = null;
+    NUM2 = null;
+    OPERATOR = null;
+    RESULT = null;
+
     resetOperatorColors();
-})
+    //updateLog();
+});
 
 equalsBtn.addEventListener("click", () => {
+
+    if(operatorJustPressed || resultDisplayed) {
+        return;
+    }
+
     NUM2 = Number(display.textContent);
-    num2Aquired = true;
-    log.textContent = `NUM1: ${NUM1}, NUM2: ${NUM2}, OPERATOR: ${OPERATOR}`;
-    if(num1Aquired && num2Aquired && operatorAquired) {
+    //updateLog();
+
+    if (!(NUM1 == null) && !(NUM2 == null) && OPERATOR) {
         RESULT = operate(NUM1, OPERATOR, NUM2);
         display.textContent = RESULT;
+        resultDisplayed = true;
+        //updateLog();
     }
+
+    NUM1 = RESULT;
+    NUM2 = null;
+    OPERATOR = null;
+
+    //updateLog();
 });
