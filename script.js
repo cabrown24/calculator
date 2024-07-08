@@ -32,6 +32,12 @@ function divide(num1, num2) {
 }
 
 function operate(num1, operator, num2) {
+
+    //check before operation.
+    if(num1 === "ERROR" || num2 === "ERROR") {
+        return "ERROR";
+    }
+
     num1 = Number(num1);
     num2 = Number(num2);
 
@@ -49,6 +55,10 @@ function operate(num1, operator, num2) {
         case "/":
             result = divide(num1, num2);
             break;
+    }
+
+    if(result === "ERROR") {
+        return "ERROR";
     }
 
     if(!(Number.isInteger(result))) {
@@ -143,7 +153,7 @@ operatorBtns.forEach((button) => {
             button.style.backgroundColor = "#f99c87";
 
             if (NUM1 == null) {
-                NUM1 = Number(display.textContent);
+                NUM1 = display.textContent;
                 setOperator(button.textContent);
                 //updateLog();
             }
@@ -151,7 +161,7 @@ operatorBtns.forEach((button) => {
             else if (!(NUM1 == null) && !(resultDisplayed) && OPERATOR) {
 
                 //num1, and an operator already aquired. (chain-operation)
-                NUM2 = Number(display.textContent);
+                NUM2 = display.textContent;
                 RESULT = operate(NUM1, OPERATOR, NUM2);
                 display.textContent = RESULT;
                 
@@ -188,7 +198,7 @@ equalsBtn.addEventListener("click", () => {
         return;
     }
 
-    NUM2 = Number(display.textContent);
+    NUM2 = display.textContent;
     //updateLog();
 
     if (!(NUM1 == null) && !(NUM2 == null) && OPERATOR) {
